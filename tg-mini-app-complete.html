@@ -1,1 +1,588 @@
-<!DOCTYPE html><html><head><title>退出演示</title><style>body{font-family:sans-serif}.btn{color:red;border:1px solid red;padding:8px;margin:10px}</style></head><body><h1>TG Mini App 退出演示</h1><button id="logout" class="btn">退出登录</button><script>document.getElementById("logout").onclick=function(){if(confirm("确定要退出登录吗？")){alert("已退出登录")}}</script></body></html>
+<!DOCTYPE html>
+<!-- Version 3.0.0 - 完整版本：包含所有退出登录功能 -->
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat Group Binding</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --tg-theme-bg-color: var(--tg-theme-bg-color, #ffffff);
+            --tg-theme-text-color: var(--tg-theme-text-color, #000000);
+            --tg-theme-hint-color: var(--tg-theme-hint-color, #999999);
+            --tg-theme-link-color: var(--tg-theme-link-color, #2481cc);
+            --tg-theme-button-color: var(--tg-theme-button-color, #2481cc);
+            --tg-theme-button-text-color: var(--tg-theme-button-text-color, #ffffff);
+            --tg-theme-secondary-bg-color: var(--tg-theme-secondary-bg-color, #f5f5f5);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        
+        .header {
+            padding: 15px;
+            background: var(--tg-theme-secondary-bg-color);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .header .user-info img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        /* 头部退出按钮样式 */
+        .logout-button {
+            color: #dc3545;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+            border: 1px solid #dc3545;
+            background-color: transparent;
+            transition: all 0.2s;
+            display: none; /* 默认隐藏，登录后显示 */
+        }
+        
+        .logout-button:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* 确认对话框样式 */
+        .confirm-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .confirm-dialog-content {
+            background-color: var(--tg-theme-bg-color);
+            border-radius: 12px;
+            padding: 20px;
+            width: 80%;
+            max-width: 320px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .confirm-dialog-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .confirm-dialog-message {
+            margin-bottom: 20px;
+            color: var(--tg-theme-text-color);
+        }
+        
+        .confirm-dialog-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .confirm-dialog-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        .confirm-dialog-button.cancel {
+            background-color: var(--tg-theme-secondary-bg-color);
+            color: var(--tg-theme-text-color);
+        }
+        
+        .confirm-dialog-button.confirm {
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+        }
+        
+        /* 页面样式 */
+        .page {
+            display: none;
+            padding: 15px;
+            height: calc(100vh - 60px - 60px);
+            overflow-y: auto;
+        }
+        
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="header">
+            <h1>聊天群组</h1>
+            <div class="d-flex align-items-center">
+                <div class="user-info" id="user-info">
+                    <!-- 用户信息会在 JS 中动态填充 -->
+                </div>
+                <!-- 头部退出按钮 -->
+                <button id="header-logout-button" class="logout-button">
+                    <i class="bi bi-box-arrow-right me-1"></i>退出
+                </button>
+            </div>
+        </div>
+        
+        <!-- 登录页面 -->
+        <div id="login-page" class="page active">
+            <div class="container mt-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-telegram text-primary" style="font-size: 3rem;"></i>
+                        <h2 class="mt-3">Telegram 群组绑定</h2>
+                        <p id="login-status" class="text-secondary mb-4">请点击下方按钮登录</p>
+                        
+                        <button id="tg-login-button" class="btn btn-primary mb-3" style="display: none;">
+                            <i class="bi bi-telegram me-2"></i>使用 Telegram 登录
+                        </button>
+                        
+                        <div id="user-details" style="display: none;">
+                            <!-- 用户详情会在 JS 中动态填充 -->
+                        </div>
+                        
+                        <button id="continue-button" class="btn btn-success mt-3" style="display: none;" onclick="showPage('groups-page')">
+                            <i class="bi bi-arrow-right me-2"></i>继续到应用
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 设置页面 -->
+        <div id="settings-page" class="page">
+            <div class="list-group">
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">深色模式</h5>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+                        </div>
+                    </div>
+                    <p class="mb-1">切换应用界面的深色/浅色模式</p>
+                </div>
+                
+                <!-- 退出登录按钮 - 放在第二位置更加明显 -->
+                <div class="list-group-item" id="logout-item" style="background-color: rgba(255, 0, 0, 0.05);">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1 text-danger">退出 TG 登录</h5>
+                        <i class="bi bi-box-arrow-right text-danger"></i>
+                    </div>
+                    <p class="mb-1">清除登录状态，重新进行身份验证</p>
+                </div>
+                
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">通知设置</h5>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                    <p class="mb-1">管理消息提醒和通知方式</p>
+                </div>
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">隐私设置</h5>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                    <p class="mb-1">控制谁可以看到您的信息</p>
+                </div>
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">关于</h5>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                    <p class="mb-1">应用版本和开发者信息</p>
+                </div>
+            </div>
+            
+            <!-- 额外的退出按钮 - 确保一定能看到 -->
+            <div class="mt-4 p-3">
+                <button id="logout-button" class="btn btn-danger w-100">
+                    <i class="bi bi-box-arrow-right me-2"></i>退出 Telegram 登录
+                </button>
+            </div>
+        </div>
+
+        <!-- 群组页面 -->
+        <div id="groups-page" class="page">
+            <div class="container mt-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>我的群组</h3>
+                    <button class="btn btn-sm btn-outline-primary" onclick="showPage('settings-page')">
+                        <i class="bi bi-gear"></i> 设置
+                    </button>
+                </div>
+                
+                <div class="list-group" id="groups-list">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Telegram Mini App 开发</h5>
+                            <small class="text-muted">管理员</small>
+                        </div>
+                        <p class="mb-1">讨论 Telegram Mini App 开发的技术群组</p>
+                        <small class="text-muted">123 名成员</small>
+                    </div>
+                    
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Web 前端交流</h5>
+                            <small class="text-muted">成员</small>
+                        </div>
+                        <p class="mb-1">HTML/CSS/JavaScript 技术讨论</p>
+                        <small class="text-muted">567 名成员</small>
+                    </div>
+                    
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">聊天群组绑定测试</h5>
+                            <small class="text-muted">拥有者</small>
+                        </div>
+                        <p class="mb-1">用于测试聊天群组绑定功能的群组</p>
+                        <small class="text-muted">10 名成员</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 确认对话框 -->
+        <div id="confirm-dialog" class="confirm-dialog">
+            <div class="confirm-dialog-content">
+                <div class="confirm-dialog-title">授权确认</div>
+                <div class="confirm-dialog-message">
+                    您确定要使用 Telegram 账号登录吗？这将授权应用访问您的基本信息。
+                </div>
+                <div class="confirm-dialog-buttons">
+                    <button id="cancel-login" class="confirm-dialog-button cancel">取消</button>
+                    <button id="confirm-login" class="confirm-dialog-button confirm">确认登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        const app = {
+            currentPage: null,
+            currentChat: null,
+            user: null,
+            authData: null,
+            tgInitialized: false,
+            isLoggedIn: false, // 新增登录状态标志
+            confirmLoginCallback: null // 存储确认登录回调函数
+        };
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', initApp);
+        
+        function initApp() {
+            // 初始化Telegram WebApp
+            initTelegramWebApp();
+            
+            // 添加事件监听器
+            setupEventListeners();
+            
+            // 默认显示登录页面
+            showPage('login-page');
+        }
+
+        // 初始化Telegram WebApp
+        function initTelegramWebApp() {
+            try {
+                // 强制禁用自动登录
+                document.getElementById('login-status').textContent = "请点击下方按钮登录";
+                
+                // 检查 Telegram WebApp API 是否可用
+                if (!window.Telegram || !window.Telegram.WebApp) {
+                    console.warn("Telegram WebApp API 不可用，提供测试登录选项");
+                    document.getElementById('tg-login-button').style.display = 'inline-flex';
+                    document.getElementById('tg-login-button').innerHTML = '<i class="bi bi-person"></i>测试账号登录';
+                    return;
+                }
+                
+                // 初始化 Telegram WebApp
+                const webapp = window.Telegram.WebApp;
+                
+                // 准备 WebApp
+                webapp.ready();
+                
+                // 设置主题
+                document.body.className = webapp.colorScheme;
+                
+                // 配置 WebApp
+                webapp.expand();
+                
+                // 显示登录按钮，等待用户点击
+                document.getElementById('tg-login-button').style.display = 'inline-flex';
+                
+                // 添加登录按钮事件 - 先显示确认对话框
+                document.getElementById('tg-login-button').addEventListener('click', showLoginConfirmation);
+                
+                // 设置返回按钮
+                webapp.BackButton.onClick(() => {
+                    if (app.currentPage === 'chat-page') {
+                        showPage('groups-page');
+                        webapp.BackButton.hide();
+                    } else if (app.currentPage !== 'login-page') {
+                        webapp.close();
+                    }
+                });
+                
+                app.tgInitialized = true;
+                
+            } catch (error) {
+                console.error("初始化 Telegram WebApp 失败:", error);
+                document.getElementById('login-status').textContent = "Telegram 登录初始化失败，请重试";
+                document.getElementById('tg-login-button').style.display = 'inline-flex';
+            }
+        }
+        
+        // 显示特定页面
+        function showPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            const targetPage = document.getElementById(pageName);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                app.currentPage = pageName;
+            }
+        }
+        
+        // 显示登录确认对话框
+        function showLoginConfirmation() {
+            // 设置确认回调
+            app.confirmLoginCallback = requestTelegramLogin;
+            
+            // 显示确认对话框
+            document.getElementById('confirm-dialog').style.display = 'flex';
+        }
+        
+        // 请求 Telegram 登录
+        function requestTelegramLogin() {
+            // 隐藏确认对话框
+            document.getElementById('confirm-dialog').style.display = 'none';
+            
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    const webapp = window.Telegram.WebApp;
+                    
+                    // 显示正在处理的状态
+                    document.getElementById('login-status').textContent = "正在处理 Telegram 登录请求...";
+                    document.getElementById('tg-login-button').style.display = 'none';
+                    document.getElementById('user-details').style.display = 'block';
+                    
+                    // 如果已经有用户数据
+                    if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
+                        app.user = webapp.initDataUnsafe.user;
+                        app.authData = {
+                            initData: webapp.initData,
+                            user: webapp.initDataUnsafe.user
+                        };
+                        
+                        // 处理登录逻辑
+                        handleTelegramLogin();
+                    } else {
+                        // 通知用户需要从 Telegram 中打开
+                        document.getElementById('login-status').textContent = "请从 Telegram 应用中打开此页面";
+                        document.getElementById('tg-login-button').style.display = 'inline-flex';
+                        document.getElementById('user-details').style.display = 'none';
+                    }
+                } else {
+                    // 使用测试模式登录
+                    simulateTelegramLogin();
+                }
+            } catch (error) {
+                console.error("Telegram 登录请求失败:", error);
+                document.getElementById('login-status').textContent = "登录请求失败，请重试";
+                document.getElementById('tg-login-button').style.display = 'inline-flex';
+                document.getElementById('user-details').style.display = 'none';
+            }
+        }
+        
+        // 处理 Telegram 登录
+        function handleTelegramLogin() {
+            // 显示登录处理中
+            document.getElementById('user-details').style.display = 'block';
+            
+            // 这里可以添加与您的后端服务器验证 Telegram 用户信息的代码
+            // 例如：可以将 app.authData 发送到您的服务器进行验证
+            
+            // 模拟验证过程
+            setTimeout(() => {
+                app.isLoggedIn = true; // 设置登录状态
+                updateUserInfo();
+                document.getElementById('login-status').textContent = "登录成功！";
+                document.getElementById('continue-button').style.display = 'inline-flex';
+                document.getElementById('user-details').style.display = 'block';
+                document.getElementById('header-logout-button').style.display = 'block'; // 显示头部退出按钮
+                
+                // 添加continue-button点击事件处理
+                document.getElementById('continue-button').addEventListener('click', function() {
+                    showPage('groups-page');
+                });
+            }, 1000);
+        }
+        
+        // 模拟 Telegram 登录（仅在测试环境中使用）
+        function simulateTelegramLogin() {
+            document.getElementById('login-status').textContent = "使用测试模式登录中...";
+            document.getElementById('tg-login-button').style.display = 'none';
+            document.getElementById('user-details').style.display = 'block';
+            
+            // 使用模拟用户数据
+            setTimeout(() => {
+                app.user = {
+                    id: 123456789,
+                    username: "demo_user",
+                    first_name: "测试",
+                    last_name: "用户"
+                };
+                
+                app.isLoggedIn = true; // 设置登录状态
+                updateUserInfo();
+                document.getElementById('login-status').textContent = "测试模式登录成功";
+                document.getElementById('continue-button').style.display = 'inline-flex';
+                document.getElementById('header-logout-button').style.display = 'block'; // 显示头部退出按钮
+                
+                // 添加continue-button点击事件处理
+                document.getElementById('continue-button').addEventListener('click', function() {
+                    showPage('groups-page');
+                });
+            }, 1500);
+        }
+
+        // 添加事件监听器
+        function setupEventListeners() {
+            // 确认对话框按钮事件
+            document.getElementById('confirm-login').addEventListener('click', function() {
+                // 执行回调函数
+                if (app.confirmLoginCallback) {
+                    app.confirmLoginCallback();
+                }
+            });
+            
+            document.getElementById('cancel-login').addEventListener('click', function() {
+                // 隐藏确认对话框
+                document.getElementById('confirm-dialog').style.display = 'none';
+                
+                // 重置回调
+                app.confirmLoginCallback = null;
+                
+                // 更新状态
+                document.getElementById('login-status').textContent = "登录已取消，请重新点击登录按钮";
+            });
+            
+            // 退出登录按钮事件 - 列表项
+            document.getElementById('logout-item').addEventListener('click', showLogoutConfirmation);
+            
+            // 退出登录按钮事件 - 底部按钮
+            document.getElementById('logout-button').addEventListener('click', showLogoutConfirmation);
+            
+            // 退出登录按钮事件 - 头部按钮
+            document.getElementById('header-logout-button').addEventListener('click', showLogoutConfirmation);
+        }
+        
+        // 显示退出确认对话框
+        function showLogoutConfirmation() {
+            // 显示确认对话框
+            document.getElementById('confirm-dialog').style.display = 'flex';
+            document.querySelector('.confirm-dialog-title').textContent = "退出登录确认";
+            document.querySelector('.confirm-dialog-message').textContent = 
+                "您确定要退出当前账号吗？退出后需要重新登录。";
+            document.getElementById('confirm-login').textContent = "确认退出";
+            
+            // 设置确认回调
+            app.confirmLoginCallback = logoutTelegram;
+        }
+        
+        // 退出 Telegram 登录
+        function logoutTelegram() {
+            // 隐藏确认对话框
+            document.getElementById('confirm-dialog').style.display = 'none';
+            
+            // 重置登录状态
+            app.isLoggedIn = false;
+            app.user = null;
+            app.authData = null;
+            
+            // 重置界面
+            document.getElementById('user-info').innerHTML = '';
+            document.getElementById('login-status').textContent = "请点击下方按钮登录";
+            document.getElementById('tg-login-button').style.display = 'inline-flex';
+            document.getElementById('continue-button').style.display = 'none';
+            document.getElementById('user-details').style.display = 'none';
+            document.getElementById('header-logout-button').style.display = 'none'; // 隐藏头部退出按钮
+            
+            // 重置对话框文本
+            document.querySelector('.confirm-dialog-title').textContent = "授权确认";
+            document.querySelector('.confirm-dialog-message').textContent = 
+                "您确定要使用 Telegram 账号登录吗？这将授权应用访问您的基本信息。";
+            document.getElementById('confirm-login').textContent = "确认登录";
+            
+            // 返回登录页面
+            showPage('login-page');
+            
+            // 通知用户
+            alert("已成功退出登录");
+        }
+        
+        // 更新用户信息
+        function updateUserInfo() {
+            const userInfoElement = document.getElementById('user-info');
+            if (app.user) {
+                userInfoElement.innerHTML = `
+                    <img src="https://ui-avatars.com/api/?name=${app.user.first_name}&background=random" alt="用户头像">
+                    <span>${app.user.first_name} ${app.user.last_name || ''}</span>
+                `;
+                
+                const userDetailsElement = document.getElementById('user-details');
+                userDetailsElement.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>已登录为 ${app.user.first_name} ${app.user.last_name || ''}</strong>
+                        ${app.user.username ? `<p>用户名: @${app.user.username}</p>` : ''}
+                        <p>用户ID: ${app.user.id}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 
