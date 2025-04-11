@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat Group Binding</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* 内联样式，避免加载外部CSS文件可能导致的问题 */
+        :root {
+            --tg-theme-bg-color: var(--tg-theme-bg-color, #ffffff);
+            --tg-theme-text-color: var(--tg-theme-text-color, #000000);
+            --tg-theme-hint-color: var(--tg-theme-hint-color, #999999);
+            --tg-theme-link-color: var(--tg-theme-link-color, #2481cc);
+            --tg-theme-button-color: var(--tg-theme-button-color, #2481cc);
+            --tg-theme-button-text-color: var(--tg-theme-button-text-color, #ffffff);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        
+        .chat-group-card {
+            background: var(--tg-theme-bg-color);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chat-group-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .group-info h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .group-info p {
+            margin: 4px 0 0;
+            font-size: 0.9rem;
+            color: var(--tg-theme-hint-color);
+        }
+        
+        .group-meta {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--tg-theme-bg-color);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            padding: 8px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            color: var(--tg-theme-hint-color);
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: var(--tg-theme-button-color);
+        }
+        
+        .nav-item i {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item span {
+            font-size: 0.8rem;
+        }
+        
+        .debug-info {
+            background: rgba(0,0,0,0.05);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 12px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 调试信息区域 -->
+        <div class="container py-2">
+            <div id="debug-info" class="debug-info">
+                加载中...请稍候
+            </div>
+        </div>
+        
+        <!-- 主内容区域 -->
+        <div class="container py-4">
+            <div class="chat-groups">
+                <!-- 群组列表将通过 JavaScript 动态加载 -->
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">正在加载群组...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <div class="nav-item active">
+                <i class="bi bi-chat-dots"></i>
+                <span>聊天</span>
+            </div>
+            <div class="nav-item">
+                <i class="bi bi-gear"></i>
+                <span>设置</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // 调试信息显示
+        const debugInfo = document.getElementById('debug-info');
+        
+        // 记录日志
+        function log(message, data = null) {
+            const timestamp = new Date().toISOString().substring(11, 19);
+            const logMessage = `[${timestamp}] ${message}`;
+            console.log(logMessage, data || '');
+            
+            // 添加到调试面板
+            if (data) {
+                debugInfo.innerHTML += `<div>${logMessage}: ${typeof data === 'object' ? JSON.stringify(data) : data}</div>`;
+            } else {
+                debugInfo.innerHTML += `<div>${logMessage}</div>`;
+            }
+        }
+        
+        // 记录错误
+        function logError(message, error) {
+            const timestamp = new Date().toISOString().substring(11, 19);
+            const errorMessage = `[${timestamp}] ❌ ${message}: ${error.message || error}`;
+            console.error(errorMessage, error);
+            
+            // 添加到调试面板
+            debugInfo.innerHTML += `<div style="color:red">${errorMessage}</div>`;
+        }
+        
+        // 清除调试信息
+        function clearDebugInfo() {
+            debugInfo.innerHTML = '';
+        }
+        
+        // 初始化应用
+        function initApp() {
+            try {
+                clearDebugInfo();
+                log("开始初始化应用");
+                
+                // 检查 Telegram WebApp API 是否可用
+                if (!window.Telegram || !window.Telegram.WebApp) {
+                    throw new Error("Telegram WebApp API 不可用。这个页面必须在 Telegram 中打开。");
+                }
+                
+                // 初始化 Telegram WebApp
+                const webapp = window.Telegram.WebApp;
+                log("WebApp API 版本", webapp.version);
+                log("平台", webapp.platform);
+                
+                // 准备 WebApp
+                webapp.ready();
+                log("WebApp Ready 事件已触发");
+                
+                // 检查 initData
+                if (!webapp.initData) {
+                    log("警告: initData 为空");
+                }
+                
+                // 设置主题
+                document.body.className = webapp.colorScheme;
+                log("应用主题", webapp.colorScheme);
+                
+                // 配置 WebApp
+                webapp.expand();
+                webapp.enableClosingConfirmation();
+                
+                // 设置标题颜色
+                webapp.setHeaderColor(webapp.themeParams.bg_color || '#ffffff');
+                webapp.setBackgroundColor(webapp.themeParams.secondary_bg_color || '#f5f5f5');
+                
+                // 获取用户数据
+                if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
+                    const user = webapp.initDataUnsafe.user;
+                    log("用户信息", {
+                        id: user.id,
+                        name: `${user.first_name} ${user.last_name || ''}`.trim(),
+                        username: user.username
+                    });
+                } else {
+                    log("警告: 未检测到用户信息");
+                }
+                
+                // 设置主 BackButton 事件
+                webapp.BackButton.onClick(() => {
+                    log("返回按钮被点击");
+                    webapp.close();
+                });
+                
+                // 加载群组列表
+                loadChatGroups();
+                
+                // 监听导航事件
+                setupNavigation();
+                
+                log("应用初始化完成");
+            } catch (error) {
+                logError("初始化应用失败", error);
+                showError(`初始化失败: ${error.message}`);
+            }
+        }
+        
+        // 加载群组列表
+        async function loadChatGroups() {
+            try {
+                log("开始加载群组列表");
+                
+                // 模拟加载群组数据
+                // 在实际应用中，这里应该是从服务器获取数据
+                setTimeout(() => {
+                    const mockGroups = [
+                        {
+                            id: "group1",
+                            name: "BTC 分析交流群",
+                            description: "比特币技术分析与市场讨论",
+                            type: "public",
+                            telegramBound: true
+                        },
+                        {
+                            id: "group2",
+                            name: "ETH 投资群",
+                            description: "以太坊投资策略交流",
+                            type: "private",
+                            telegramBound: false
+                        },
+                        {
+                            id: "group3",
+                            name: "数字货币新闻",
+                            description: "最新加密货币新闻与资讯",
+                            type: "public",
+                            telegramBound: true
+                        }
+                    ];
+                    
+                    log("群组加载成功", { count: mockGroups.length });
+                    renderChatGroups(mockGroups);
+                }, 1000);
+                
+                // 实际 API 调用（目前注释掉）
+                /*
+                const webapp = window.Telegram.WebApp;
+                const response = await fetch('/api/groups', {
+                    headers: {
+                        'X-Telegram-Init-Data': webapp.initData
+                    }
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    log("群组加载成功", { count: data.groups.length });
+                    renderChatGroups(data.groups);
+                } else {
+                    throw new Error(data.message || '加载群组失败');
+                }
+                */
+            } catch (error) {
+                logError("加载群组失败", error);
+                showError(`加载群组失败: ${error.message}`);
+            }
+        }
+        
+        // 渲染群组列表
+        function renderChatGroups(groups) {
+            const container = document.querySelector('.chat-groups');
+            if (groups && groups.length > 0) {
+                container.innerHTML = groups.map(group => `
+                    <div class="chat-group-card" onclick="openChat('${group.id}')">
+                        <div class="group-info">
+                            <h3>${group.name}</h3>
+                            <p>${group.description || '暂无描述'}</p>
+                        </div>
+                        <div class="group-meta">
+                            <span class="badge ${group.type === 'public' ? 'bg-success' : 'bg-secondary'}">
+                                ${group.type === 'public' ? '公开' : '私密'}
+                            </span>
+                            ${group.telegramBound ? '<i class="bi bi-telegram text-primary"></i>' : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        您还没有加入任何群组
+                    </div>
+                `;
+            }
+        }
+        
+        // 打开聊天
+        function openChat(groupId) {
+            log("打开群组", { groupId });
+            window.location.href = `/chat_detail.html?groupId=${groupId}`;
+        }
+        
+        // 显示错误信息
+        function showError(message) {
+            const container = document.querySelector('.chat-groups');
+            container.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    ${message}
+                </div>
+            `;
+        }
+        
+        // 设置导航事件
+        function setupNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const type = this.querySelector('span').textContent;
+                    log("导航切换", { type });
+                    
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    if (type === '设置') {
+                        window.location.href = '/settings.html';
+                    }
+                });
+            });
+        }
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html> 

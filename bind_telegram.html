@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绑定Telegram群组</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+    <!-- iOS状态栏 -->
+    <div class="status-bar-content">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 顶部导航栏 -->
+    <div class="status-bar">
+        <div>
+            <i class="fas fa-chevron-left text-blue-500"></i>
+        </div>
+        <h1 class="text-lg font-bold">绑定Telegram群组</h1>
+        <div style="width: 24px;"></div>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="content">
+        <!-- 当前聊天室 -->
+        <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <h2 class="text-base font-semibold mb-3">当前聊天室</h2>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="聊天室头像" class="w-12 h-12 rounded-full mr-3">
+                    <div>
+                        <div class="font-medium">王大师的BTC趋势分析</div>
+                        <div class="text-xs text-gray-500 mt-1">成员: 256人</div>
+                    </div>
+                </div>
+                <div class="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs">
+                    公开
+                </div>
+            </div>
+        </div>
+        
+        <!-- 绑定步骤 -->
+        <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 flex-shrink-0">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h2 class="text-lg font-semibold">绑定Telegram群组</h2>
+            </div>
+            
+            <div class="bg-blue-50 text-blue-800 p-3 rounded-lg mb-4 text-sm">
+                绑定后，您的APP聊天室和Telegram群组消息将双向同步，提升交流效率！
+            </div>
+            
+            <div class="space-y-5">
+                <!-- 步骤1 -->
+                <div class="flex">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="w-7 h-7 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">1</div>
+                        <div class="h-full border-l border-dashed border-gray-300 flex-1 my-2 ml-px"></div>
+                    </div>
+                    
+                    <div class="pb-4">
+                        <h3 class="font-medium text-base mb-2">添加官方机器人到您的Telegram群组</h3>
+                        <p class="text-sm text-gray-600 mb-3">在Telegram中搜索并添加 <span class="font-semibold text-blue-600">@TradingPlatformBot</span> 到您要绑定的群组中</p>
+                        
+                        <div class="flex">
+                            <button class="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded text-sm mr-2">
+                                <i class="fab fa-telegram-plane mr-2"></i>
+                                前往Telegram
+                            </button>
+                            <button class="flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded text-sm">
+                                <i class="far fa-copy mr-2"></i>
+                                复制Bot用户名
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 步骤2 -->
+                <div class="flex">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="w-7 h-7 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">2</div>
+                        <div class="h-full border-l border-dashed border-gray-300 flex-1 my-2 ml-px"></div>
+                    </div>
+                    
+                    <div class="pb-4">
+                        <h3 class="font-medium text-base mb-2">将机器人设为群组管理员</h3>
+                        <p class="text-sm text-gray-600 mb-3">在Telegram群组中，找到成员列表，将我们的机器人设置为管理员并授予以下权限：</p>
+                        
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-sm bg-blue-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <span class="text-sm">读取消息</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-sm bg-blue-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <span class="text-sm">发送消息</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-sm bg-blue-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <span class="text-sm">编辑消息</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 rounded-sm bg-blue-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                                <span class="text-sm">删除消息</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-100 rounded-lg p-3">
+                            <img src="https://i.imgur.com/PqS8zMM.png" alt="Telegram管理员设置示例" class="w-full rounded-lg">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 步骤3 -->
+                <div class="flex">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="w-7 h-7 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">3</div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-medium text-base mb-2">获取验证码并完成绑定</h3>
+                        <p class="text-sm text-gray-600 mb-3">在Telegram群组中发送命令 <span class="font-semibold text-blue-600">/bind</span>，机器人将生成一个验证码</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">输入验证码</label>
+                            <div class="flex gap-2">
+                                <input type="text" class="input-field" placeholder="输入6位验证码">
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded flex-shrink-0">验证</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 常见问题 -->
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <h2 class="font-semibold mb-3">常见问题</h2>
+            
+            <div class="space-y-3">
+                <div class="border-b pb-3">
+                    <button class="flex justify-between items-center w-full text-left">
+                        <span class="text-sm font-medium">如何解绑Telegram群组？</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </button>
+                </div>
+                
+                <div class="border-b pb-3">
+                    <button class="flex justify-between items-center w-full text-left">
+                        <span class="text-sm font-medium">绑定后聊天记录会同步吗？</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </button>
+                </div>
+                
+                <div>
+                    <button class="flex justify-between items-center w-full text-left">
+                        <span class="text-sm font-medium">一个聊天室可以绑定多个Telegram群组吗？</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单测试</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #log { background: #f0f0f0; padding: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>测试页面</h1>
+    <button onclick="showAlert()">点击测试</button>
+    <div id="log"></div>
+
+    <script>
+        const logElement = document.getElementById('log');
+        
+        function log(msg) {
+            logElement.innerHTML += msg + '<br>';
+        }
+        
+        function showAlert() {
+            alert('按钮测试成功！');
+            log('按钮已点击');
+        }
+        
+        try {
+            log('页面加载成功');
+            if (window.Telegram && window.Telegram.WebApp) {
+                log('Telegram WebApp API 可用');
+                window.Telegram.WebApp.ready();
+                log('已调用 WebApp.ready()');
+            } else {
+                log('Telegram WebApp API 不可用');
+            }
+        } catch (e) {
+            log('错误: ' + e.message);
+        }
+    </script>
+</body>
+</html> 

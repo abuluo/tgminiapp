@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静态Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            margin: 0;
+            text-align: center;
+        }
+        button {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        #status {
+            margin: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram Mini App 测试</h1>
+    <p>这是一个完全静态的 HTML 文件</p>
+    <button onclick="testFunction()">测试按钮</button>
+    <div id="status">状态信息将显示在这里...</div>
+
+    <script>
+        // 记录状态信息
+        function updateStatus(message) {
+            const statusElem = document.getElementById('status');
+            statusElem.innerHTML += message + '<br>';
+        }
+
+        // 页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('页面已加载');
+            
+            // 检查 Telegram WebApp API
+            if (window.Telegram && window.Telegram.WebApp) {
+                updateStatus('✅ Telegram WebApp API 已检测到');
+                
+                try {
+                    // 初始化 WebApp
+                    const webApp = window.Telegram.WebApp;
+                    webApp.ready();
+                    
+                    // 记录平台信息
+                    updateStatus(`平台: ${webApp.platform || '未知'}`);
+                    updateStatus(`版本: ${webApp.version || '未知'}`);
+                    updateStatus(`颜色主题: ${webApp.colorScheme || '未知'}`);
+                    
+                    // 检查用户数据
+                    if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
+                        const user = webApp.initDataUnsafe.user;
+                        updateStatus(`用户: ${user.first_name} ${user.last_name || ''}`);
+                    } else {
+                        updateStatus('⚠️ 无法获取用户数据');
+                    }
+                } catch (e) {
+                    updateStatus(`❌ 错误: ${e.message}`);
+                }
+            } else {
+                updateStatus('❌ Telegram WebApp API 不可用');
+                updateStatus('请确保在 Telegram 内打开此页面');
+            }
+        });
+        
+        // 测试按钮点击函数
+        function testFunction() {
+            updateStatus('按钮已点击');
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                try {
+                    // 显示 Telegram 弹窗
+                    window.Telegram.WebApp.showPopup({
+                        title: '测试成功',
+                        message: '按钮功能正常!',
+                        buttons: [{type: 'ok'}]
+                    });
+                } catch (e) {
+                    updateStatus(`弹窗错误: ${e.message}`);
+                    // 降级到普通 alert
+                    alert('测试成功!');
+                }
+            } else {
+                // 降级到普通 alert
+                alert('测试成功!');
+            }
+        }
+    </script>
+</body>
+</html> 

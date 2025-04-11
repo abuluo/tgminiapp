@@ -1,0 +1,278 @@
+/* iOS风格的状态栏 */
+.status-bar {
+  height: 44px;
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.status-bar-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px 0;
+  font-size: 12px;
+}
+
+.time {
+  font-weight: 600;
+}
+
+.status-icons {
+  display: flex;
+  gap: 5px;
+}
+
+/* 底部导航栏 */
+.bottom-nav {
+  height: 83px;
+  background-color: #FFFFFF;
+  border-top: 1px solid #E0E0E0;
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 30px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #8E8E93;
+  font-size: 10px;
+  padding-top: 8px;
+}
+
+.nav-item.active {
+  color: #007AFF;
+}
+
+.nav-icon {
+  font-size: 22px;
+  margin-bottom: 3px;
+}
+
+/* 主内容区域 */
+.content {
+  padding: 16px;
+  padding-bottom: 100px;
+  background-color: #F2F2F7;
+  min-height: calc(100vh - 127px);
+}
+
+/* 聊天室列表样式 */
+.chat-room {
+  background-color: white;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 聊天消息样式 */
+.message {
+  max-width: 80%;
+  margin-bottom: 12px;
+  clear: both;
+}
+
+.message-sent {
+  background-color: #007AFF;
+  color: white;
+  border-radius: 18px 18px 4px 18px;
+  padding: 12px 16px;
+  float: right;
+  margin-left: auto;
+}
+
+.message-received {
+  background-color: #E9E9EB;
+  color: #000000;
+  border-radius: 18px 18px 18px 4px;
+  padding: 12px 16px;
+  float: left;
+}
+
+.message-info {
+  font-size: 12px;
+  color: #8E8E93;
+  clear: both;
+  padding: 4px;
+}
+
+/* 绑定Telegram样式 */
+.bind-telegram-box {
+  background-color: white;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.bind-telegram-icon {
+  font-size: 48px;
+  color: #0088cc; /* Telegram蓝色 */
+  margin-bottom: 12px;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background-color: #007AFF;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+  border: none;
+  width: 100%;
+}
+
+.btn-secondary {
+  background-color: #E9E9EB;
+  color: #000000;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+  border: none;
+  width: 100%;
+}
+
+/* 输入框样式 */
+.input-field {
+  border: 1px solid #E0E0E0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  width: 100%;
+  font-size: 16px;
+}
+
+/* 聊天输入区域 */
+.chat-input-area {
+  position: fixed;
+  bottom: 83px;
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 12px 16px;
+  border-top: 1px solid #E0E0E0;
+  display: flex;
+  align-items: center;
+}
+
+.chat-input {
+  flex: 1;
+  border: 1px solid #E0E0E0;
+  border-radius: 20px;
+  padding: 10px 16px;
+  margin-right: 12px;
+  font-size: 16px;
+}
+
+.send-button {
+  background-color: #007AFF;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+/* 带单员信息样式 */
+.trader-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.trader-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.trader-name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.trader-details {
+  font-size: 14px;
+  color: #8E8E93;
+}
+
+/* 通用样式 */
+.text-primary {
+  color: #007AFF;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* 未读消息标记 */
+.unread-badge {
+  background-color: #FF3B30;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 12px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* QR码容器 */
+.qrcode-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.qrcode-image {
+  width: 200px;
+  height: 200px;
+  margin: 16px 0;
+} 

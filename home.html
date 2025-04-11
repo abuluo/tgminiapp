@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交易所首页</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+    <!-- iOS状态栏 -->
+    <div class="status-bar-content">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 顶部导航栏 -->
+    <div class="status-bar">
+        <div style="width: 24px;"></div>
+        <h1 class="text-lg font-bold">交易所</h1>
+        <i class="fas fa-bell text-gray-600"></i>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="content">
+        <!-- 市场概览 -->
+        <div class="bg-white rounded-xl p-4 mb-4 shadow-sm">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="font-semibold">市场概览</h2>
+                <span class="text-sm text-gray-500">24小时</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=023" alt="BTC" class="w-6 h-6 mr-2">
+                            <span class="font-medium">BTC/USDT</span>
+                        </div>
+                        <span class="text-green-500">+2.4%</span>
+                    </div>
+                    <div class="text-lg font-bold mt-2">$43,256.78</div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=023" alt="ETH" class="w-6 h-6 mr-2">
+                            <span class="font-medium">ETH/USDT</span>
+                        </div>
+                        <span class="text-red-500">-0.8%</span>
+                    </div>
+                    <div class="text-lg font-bold mt-2">$2,356.42</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 专业带单员 -->
+        <div class="bg-white rounded-xl p-4 mb-4 shadow-sm">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="font-semibold">专业带单员</h2>
+                <span class="text-sm text-blue-500">查看全部</span>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="带单员" class="w-10 h-10 rounded-full mr-3">
+                        <div>
+                            <div class="font-medium">王大师</div>
+                            <div class="text-xs text-gray-500">收益率 +187%</div>
+                        </div>
+                    </div>
+                    <button class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">进入聊天室</button>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="带单员" class="w-10 h-10 rounded-full mr-3">
+                        <div>
+                            <div class="font-medium">李分析师</div>
+                            <div class="text-xs text-gray-500">收益率 +156%</div>
+                        </div>
+                    </div>
+                    <button class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">进入聊天室</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 交易所服务 -->
+        <div class="bg-white rounded-xl p-4 mb-4 shadow-sm">
+            <h2 class="font-semibold mb-3">交易所服务</h2>
+            
+            <div class="grid grid-cols-4 gap-2 text-center">
+                <div class="p-2">
+                    <div class="bg-blue-50 text-blue-500 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                        <i class="fas fa-chart-line text-xl"></i>
+                    </div>
+                    <div class="text-xs">现货交易</div>
+                </div>
+                
+                <div class="p-2">
+                    <div class="bg-purple-50 text-purple-500 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                        <i class="fas fa-bolt text-xl"></i>
+                    </div>
+                    <div class="text-xs">合约交易</div>
+                </div>
+                
+                <div class="p-2">
+                    <div class="bg-green-50 text-green-500 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                        <i class="fas fa-wallet text-xl"></i>
+                    </div>
+                    <div class="text-xs">资产</div>
+                </div>
+                
+                <div class="p-2">
+                    <div class="bg-yellow-50 text-yellow-500 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                        <i class="fas fa-comments text-xl"></i>
+                    </div>
+                    <div class="text-xs">聊天室</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 最新市场动态 -->
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <h2 class="font-semibold mb-3">最新市场动态</h2>
+            
+            <div class="space-y-3">
+                <div class="border-b pb-3">
+                    <div class="text-sm font-medium">比特币突破44,000美元，连续上涨三日</div>
+                    <div class="text-xs text-gray-500 mt-1">2小时前</div>
+                </div>
+                
+                <div class="border-b pb-3">
+                    <div class="text-sm font-medium">以太坊2.0最新进展：开发者宣布测试网成功</div>
+                    <div class="text-xs text-gray-500 mt-1">5小时前</div>
+                </div>
+                
+                <div>
+                    <div class="text-sm font-medium">交易所新增5个交易对，交易手续费全免</div>
+                    <div class="text-xs text-gray-500 mt-1">1天前</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <i class="fas fa-home nav-icon"></i>
+            <div>首页</div>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-chart-bar nav-icon"></i>
+            <div>行情</div>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-exchange-alt nav-icon"></i>
+            <div>交易</div>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-comments nav-icon"></i>
+            <div>聊天室</div>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <div>我的</div>
+        </div>
+    </div>
+</body>
+</html> 

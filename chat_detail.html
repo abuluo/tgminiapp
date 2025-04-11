@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天室详情</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+    <!-- iOS状态栏 -->
+    <div class="status-bar-content">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 顶部导航栏 -->
+    <div class="status-bar">
+        <div>
+            <i class="fas fa-chevron-left text-blue-500"></i>
+        </div>
+        <div class="flex items-center">
+            <h1 class="text-lg font-semibold">王大师的BTC趋势分析</h1>
+            <div class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-600 text-xs rounded-full flex items-center">
+                <i class="fab fa-telegram-plane mr-1"></i> 已绑定
+            </div>
+        </div>
+        <i class="fas fa-ellipsis-v text-gray-600"></i>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="content pb-32">
+        <!-- 聊天室公告 -->
+        <div class="bg-yellow-50 border border-yellow-100 rounded-lg p-3 mb-4 flex items-start">
+            <i class="fas fa-bullhorn text-yellow-500 mt-1 mr-2"></i>
+            <div>
+                <h3 class="text-sm font-semibold text-yellow-800">聊天室公告</h3>
+                <p class="text-xs text-yellow-700">欢迎来到王大师的BTC趋势分析聊天室！本群消息已与Telegram群组同步，您可以在任一平台参与讨论。</p>
+            </div>
+        </div>
+        
+        <!-- 消息记录 -->
+        <div class="space-y-4">
+            <!-- 日期分隔线 -->
+            <div class="flex items-center justify-center">
+                <div class="bg-gray-200 text-gray-500 text-xs px-3 py-1 rounded-full">
+                    今天 14:25
+                </div>
+            </div>
+            
+            <!-- Telegram同步消息提示 -->
+            <div class="flex items-center justify-center">
+                <div class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full flex items-center">
+                    <i class="fab fa-telegram-plane mr-1"></i> 
+                    Telegram群组已连接，消息将双向同步
+                </div>
+            </div>
+            
+            <!-- 带单员消息 -->
+            <div class="flex items-start">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="带单员头像" class="w-8 h-8 rounded-full mr-2 mt-1">
+                <div>
+                    <div class="flex items-baseline">
+                        <span class="font-medium text-sm">王大师</span>
+                        <span class="text-xs text-blue-600 ml-1 bg-blue-50 px-1 rounded">带单员</span>
+                        <span class="text-xs text-gray-500 ml-2">14:25</span>
+                    </div>
+                    <div class="message message-received">
+                        各位早上好！今天BTC目前处于关键支撑位，我认为接下来有两种可能的走势：
+                    </div>
+                    <div class="message message-received">
+                        1. 若能守住42800美元支撑，有望反弹至44500-45000区间
+                        2. 若跌破支撑，可能回调至41500测试前期低点
+                    </div>
+                    <div class="message message-received flex flex-col">
+                        <img src="https://i.imgur.com/XjWCCbX.png" alt="BTC走势图" class="w-64 h-auto rounded-lg mb-2">
+                        <span>大家可以参考这张走势图，关注这两条趋势线</span>
+                    </div>
+                    <div class="message-info">
+                        <i class="fab fa-telegram-plane text-blue-500"></i> 通过Telegram发送
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 用户消息1 -->
+            <div class="flex items-start">
+                <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2 mt-1">
+                <div>
+                    <div class="flex items-baseline">
+                        <span class="font-medium text-sm">李小姐</span>
+                        <span class="text-xs text-gray-500 ml-2">14:28</span>
+                    </div>
+                    <div class="message message-received">
+                        谢谢分析！我想问一下现在是适合做多还是做空呢？
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 用户消息2 -->
+            <div class="flex items-start">
+                <img src="https://randomuser.me/api/portraits/men/55.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2 mt-1">
+                <div>
+                    <div class="flex items-baseline">
+                        <span class="font-medium text-sm">张先生</span>
+                        <span class="text-xs text-gray-500 ml-2">14:30</span>
+                    </div>
+                    <div class="message message-received">
+                        我觉得大师的分析很有道理，最近比特币确实在这个区间震荡
+                    </div>
+                    <div class="message-info">
+                        <i class="fab fa-telegram-plane text-blue-500"></i> 通过Telegram发送
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 当前用户消息 -->
+            <div>
+                <div class="message message-sent">
+                    请问大师，您认为现在入场做多合适吗？止损位应该设在哪里？
+                </div>
+                <div class="message-info text-right">
+                    14:32 · 已发送
+                </div>
+            </div>
+            
+            <!-- 带单员消息 -->
+            <div class="flex items-start">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="带单员头像" class="w-8 h-8 rounded-full mr-2 mt-1">
+                <div>
+                    <div class="flex items-baseline">
+                        <span class="font-medium text-sm">王大师</span>
+                        <span class="text-xs text-blue-600 ml-1 bg-blue-50 px-1 rounded">带单员</span>
+                        <span class="text-xs text-gray-500 ml-2">14:35</span>
+                    </div>
+                    <div class="message message-received">
+                        @李小姐 @用户 根据目前情况，我建议先观望，等待价格确认突破趋势线后再入场。
+                    </div>
+                    <div class="message message-received">
+                        如果决定做多，建议止损设在42500以下，目标位看45000。风险提示：做好资金管理，单笔交易风险不要超过总资金的5%。
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 系统提示 -->
+            <div class="flex items-center justify-center">
+                <div class="bg-gray-100 text-gray-500 text-xs px-3 py-1 rounded-full">
+                    张教授 加入了聊天室
+                </div>
+            </div>
+            
+            <!-- 新加入用户消息 -->
+            <div class="flex items-start">
+                <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2 mt-1">
+                <div>
+                    <div class="flex items-baseline">
+                        <span class="font-medium text-sm">张教授</span>
+                        <span class="text-xs text-gray-500 ml-2">14:40</span>
+                    </div>
+                    <div class="message message-received">
+                        大家好，我是刚加入的。想请教一下大师对ETH的看法？
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 聊天输入区域 -->
+    <div class="chat-input-area">
+        <button class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mr-2">
+            <i class="fas fa-plus text-gray-600"></i>
+        </button>
+        <input type="text" class="chat-input" placeholder="发送消息...">
+        <button class="send-button">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</body>
+</html> 

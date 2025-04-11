@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绑定Telegram账号</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+    <!-- iOS状态栏 -->
+    <div class="status-bar-content">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 顶部导航栏 -->
+    <div class="status-bar">
+        <div>
+            <i class="fas fa-chevron-left text-blue-500"></i>
+        </div>
+        <h1 class="text-lg font-bold">绑定Telegram账号</h1>
+        <div style="width: 24px;"></div>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="content">
+        <!-- 绑定说明 -->
+        <div class="bg-white rounded-xl p-5 shadow-sm mb-5">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mr-4">
+                    <i class="fab fa-telegram-plane text-blue-500 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold">绑定您的Telegram账号</h2>
+                    <p class="text-sm text-gray-600">与Telegram聊天内容同步，获得更好的交易体验</p>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 text-blue-800 p-4 rounded-lg mb-5 text-sm">
+                <p>绑定后您将能够：</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>接收Telegram群组中的实时交易信号</li>
+                    <li>在APP中与带单员和其他用户互动</li>
+                    <li>跨平台查看所有消息，不遗漏重要通知</li>
+                </ul>
+            </div>
+            
+            <div class="mb-4">
+                <h3 class="font-medium mb-3">绑定方式</h3>
+                
+                <div class="flex gap-3">
+                    <div class="flex-1 border rounded-lg p-3 bg-blue-50 border-blue-300">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center bg-white">
+                                <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                            </div>
+                            <span class="ml-2 font-medium text-blue-800">扫码绑定</span>
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1">使用Telegram扫描二维码绑定</p>
+                    </div>
+                    
+                    <div class="flex-1 border rounded-lg p-3">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center bg-white">
+                            </div>
+                            <span class="ml-2 font-medium">手动绑定</span>
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1">通过验证码手动绑定账号</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 扫码区域 -->
+        <div class="bg-white rounded-xl p-5 shadow-sm mb-5 flex flex-col items-center">
+            <h3 class="text-center font-semibold mb-4">使用Telegram扫描二维码</h3>
+            
+            <div class="qrcode-container">
+                <div class="text-sm text-center text-gray-600 mb-2">打开Telegram，扫描下方二维码</div>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://t.me/TradingPlatformBot?start=USER123456" alt="Telegram绑定二维码" class="qrcode-image">
+                <div class="text-xs text-gray-500 text-center">二维码有效期：10分钟</div>
+            </div>
+            
+            <div class="flex flex-col items-center mt-4 w-full">
+                <div class="text-sm text-gray-700 text-center mb-3">或者点击下方按钮直接打开Telegram</div>
+                <button class="flex items-center justify-center bg-blue-500 text-white px-6 py-3 rounded-lg text-sm font-medium w-64">
+                    <i class="fab fa-telegram-plane mr-2 text-lg"></i>
+                    打开Telegram绑定
+                </button>
+                
+                <div class="mt-4 text-sm text-gray-500 text-center">
+                    绑定后请返回APP查看绑定状态
+                </div>
+            </div>
+        </div>
+        
+        <!-- 绑定状态 -->
+        <div class="bg-white rounded-xl p-5 shadow-sm flex items-center">
+            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mr-4">
+                <i class="fas fa-spinner fa-spin text-blue-500"></i>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-medium">等待绑定</h3>
+                <p class="text-sm text-gray-600">请使用Telegram扫码或点击按钮完成绑定</p>
+            </div>
+        </div>
+        
+        <!-- 取消按钮 -->
+        <div class="mt-6">
+            <button class="btn-secondary">稍后绑定</button>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>群组管理 - Chat Group Binding</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Chat Group Binding</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/groups">群组管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chat">聊天</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings">设置</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link">欢迎, testuser</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logout-button">登出</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- 左侧：创建聊天室 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>创建聊天室</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="createChatRoom">
+                            <div class="mb-3">
+                                <label for="roomName" class="form-label">聊天室名称</label>
+                                <input type="text" class="form-control" id="roomName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="roomDescription" class="form-label">聊天室简介</label>
+                                <textarea class="form-control" id="roomDescription" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">标签（最多选择3个）</label>
+                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                    <span class="badge bg-primary">比特币 <button type="button" class="btn-close btn-close-white"></button></span>
+                                    <span class="badge bg-primary">技术分析 <button type="button" class="btn-close btn-close-white"></button></span>
+                                </div>
+                                <div class="input-group" style="max-width: 300px;">
+                                    <input type="text" class="form-control" id="tagInput" placeholder="输入标签名称">
+                                    <button class="btn btn-outline-primary" type="button" id="addTag">添加标签</button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">聊天室类型</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="roomType" id="publicRoom" checked>
+                                    <label class="form-check-label" for="publicRoom">
+                                        公开 - 所有用户可见，无需审核即可加入
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="roomType" id="privateRoom">
+                                    <label class="form-check-label" for="privateRoom">
+                                        私密 - 需要审核通过后才能加入
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">绑定Telegram群组</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="bindTelegram">
+                                    <label class="form-check-label" for="bindTelegram">创建后立即绑定Telegram群组</label>
+                                </div>
+                                <small class="text-muted">开启后，创建完成会自动跳转到绑定页面</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">创建聊天室</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：绑定Telegram群组 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>绑定Telegram群组</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="current-group mb-4">
+                            <h5>当前聊天室</h5>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="https://via.placeholder.com/40" class="rounded-circle" alt="群组头像">
+                                <div>
+                                    <h6 class="mb-1">王大师的BTC趋势分析</h6>
+                                    <small class="text-muted">成员: 256人</small>
+                                </div>
+                                <span class="badge bg-success ms-auto">公开</span>
+                            </div>
+                        </div>
+
+                        <div class="binding-steps">
+                            <h5>绑定步骤</h5>
+                            <div class="step mb-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="badge bg-primary rounded-circle">1</div>
+                                    <h6 class="mb-0">添加官方机器人到您的Telegram群组</h6>
+                                </div>
+                                <div class="ms-4 mt-2">
+                                    <p class="mb-2">在Telegram中搜索并添加</p>
+                                    <div class="d-flex gap-2">
+                                        <code class="bot-username">@YourActualBotName</code>
+                                        <button class="btn btn-sm btn-outline-primary" id="copyBotName">复制Bot用户名</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step mb-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="badge bg-primary rounded-circle">2</div>
+                                    <h6 class="mb-0">将机器人设为群组管理员</h6>
+                                </div>
+                                <div class="ms-4 mt-2">
+                                    <p class="mb-2">在Telegram群组中，找到成员列表，将我们的机器人设置为管理员并授予以下权限：</p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" checked disabled>
+                                        <label class="form-check-label">读取消息</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" checked disabled>
+                                        <label class="form-check-label">发送消息</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" checked disabled>
+                                        <label class="form-check-label">编辑消息</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" checked disabled>
+                                        <label class="form-check-label">删除消息</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step mb-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="badge bg-primary rounded-circle">3</div>
+                                    <h6 class="mb-0">获取验证码并完成绑定</h6>
+                                </div>
+                                <div class="ms-4 mt-2">
+                                    <p class="mb-2">在Telegram群组中发送命令 <code>/bind</code>，机器人将生成一个验证码</p>
+                                    <div class="mb-3">
+                                        <label for="verificationCode" class="form-label">输入验证码</label>
+                                        <div class="d-flex gap-2">
+                                            <input type="text" class="form-control" id="verificationCode" placeholder="输入6位验证码" maxlength="6" style="max-width: 200px;">
+                                            <button type="button" class="btn btn-primary" id="verifyCode">验证</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                绑定后，您的APP聊天室和Telegram群组消息将双向同步，提升交流效率！
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // 获取Bot信息并更新页面
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('/api/bot-info');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.data) {
+                        // 更新Bot用户名显示
+                        const botUsernameElement = document.querySelector('.bot-username');
+                        if (botUsernameElement && data.data.username) {
+                            botUsernameElement.textContent = '@' + data.data.username;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('获取Bot信息失败:', error);
+            }
+        });
+    </script>
+</body>
+</html> 
