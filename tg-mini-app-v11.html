@@ -1,0 +1,692 @@
+<!-- 超明显退出按钮版本 V11 -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat Group Binding</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --tg-theme-bg-color: var(--tg-theme-bg-color, #ffffff);
+            --tg-theme-text-color: var(--tg-theme-text-color, #000000);
+            --tg-theme-hint-color: var(--tg-theme-hint-color, #999999);
+            --tg-theme-link-color: var(--tg-theme-link-color, #2481cc);
+            --tg-theme-button-color: var(--tg-theme-button-color, #2481cc);
+            --tg-theme-button-text-color: var(--tg-theme-button-text-color, #ffffff);
+            --tg-theme-secondary-bg-color: var(--tg-theme-secondary-bg-color, #f5f5f5);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        
+        .header {
+            padding: 15px;
+            background: var(--tg-theme-secondary-bg-color);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .header .user-info img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .page {
+            display: none;
+            padding: 15px;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .login-container {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        .login-container img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .login-button {
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+        }
+        
+        .login-button:hover {
+            opacity: 0.9;
+        }
+        
+        .login-button i {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+        
+        .chat-group-card {
+            background: var(--tg-theme-bg-color);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chat-group-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .group-info h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .group-info p {
+            margin: 4px 0 0;
+            font-size: 0.9rem;
+            color: var(--tg-theme-hint-color);
+        }
+        
+        .group-meta {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 60px;
+            padding: 10px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-bottom: 8px;
+            position: relative;
+            word-break: break-word;
+        }
+        
+        .message.outgoing {
+            align-self: flex-end;
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message.incoming {
+            align-self: flex-start;
+            background-color: var(--tg-theme-secondary-bg-color);
+            color: var(--tg-theme-text-color);
+            border-bottom-left-radius: 4px;
+        }
+        
+        .message .sender {
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .message .time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            position: absolute;
+            right: 10px;
+            bottom: 5px;
+        }
+        
+        .message-form {
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            display: flex;
+            padding: 10px;
+            background-color: var(--tg-theme-bg-color);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .message-form input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            background-color: var(--tg-theme-secondary-bg-color);
+            color: var(--tg-theme-text-color);
+            margin-right: 10px;
+        }
+        
+        .message-form button {
+            width: 44px;
+            height: 44px;
+            border-radius: 22px;
+            border: none;
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--tg-theme-bg-color);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            color: var(--tg-theme-hint-color);
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: var(--tg-theme-button-color);
+        }
+        
+        .nav-item i {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item span {
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="header">
+            <h1>聊天群组</h1>
+            <div class="user-info" id="user-info">
+                <!-- 用户信息会在 JS 中动态填充 -->
+            </div>
+        </div>
+        
+        <!-- 登录页面 -->
+        <div id="login-page" class="page">
+            <div class="login-container">
+                <img src="https://telegram.org/img/t_logo.svg" alt="Telegram Logo">
+                <h2>欢迎使用聊天群组绑定</h2>
+                <p>您已通过 Telegram 自动登录</p>
+                <div id="user-details" class="mt-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>正在获取用户信息...</p>
+                </div>
+                <button id="continue-button" class="login-button mt-4">
+                    <i class="bi bi-chat-dots"></i>
+                    进入聊天群组
+                </button>
+            </div>
+        </div>
+        
+        <!-- 群组列表页面 -->
+        <div id="groups-page" class="page">
+            <div class="chat-groups" id="chat-groups">
+                <!-- 群组列表将通过 JavaScript 动态加载 -->
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">正在加载群组...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 聊天页面 -->
+        <div id="chat-page" class="page">
+            <div class="chat-header mb-2">
+                <h3 id="chat-title">加载中...</h3>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <!-- 消息将通过 JavaScript 动态加载 -->
+            </div>
+            <form class="message-form" id="message-form">
+                <input type="text" id="message-input" placeholder="发送消息..." autocomplete="off">
+                <button type="submit">
+                    <i class="bi bi-send"></i>
+                </button>
+            </form>
+        </div>
+        
+        <!-- 设置页面 -->
+        <div id="settings-page" class="page">
+            <div class="list-group">
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">深色模式</h5>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+                        </div>
+                    </div>
+                    <p class="mb-1">切换应用界面的深色/浅色模式</p>
+                </div>
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">通知设置</h5>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                    <p class="mb-1">管理消息提醒和通知方式</p>
+                </div>
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">隐私设置</h5>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                    <p class="mb-1">控制谁可以看到您的信息</p>
+                </div>
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">关于</h5>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                    <p class="mb-1">应用版本和开发者信息</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <div class="nav-item" data-page="groups-page">
+                <i class="bi bi-chat-left-text"></i>
+                <span>群组</span>
+            </div>
+            <div class="nav-item" data-page="settings-page">
+                <i class="bi bi-gear"></i>
+                <span>设置</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // 全局变量
+        const app = {
+            currentPage: null,
+            currentChat: null,
+            user: null,
+            tgInitialized: false,
+            mockGroups: [
+                {
+                    id: "group1",
+                    name: "BTC 趋势分析群",
+                    description: "比特币技术分析与市场讨论",
+                    type: "public",
+                    telegramBound: true,
+                    messageCount: 128,
+                    lastActivity: "刚刚"
+                },
+                {
+                    id: "group2",
+                    name: "ETH 投资策略",
+                    description: "以太坊投资策略交流",
+                    type: "private",
+                    telegramBound: false,
+                    messageCount: 56,
+                    lastActivity: "10分钟前"
+                },
+                {
+                    id: "group3",
+                    name: "数字货币新闻",
+                    description: "最新加密货币新闻与资讯",
+                    type: "public",
+                    telegramBound: true,
+                    messageCount: 203,
+                    lastActivity: "1小时前"
+                }
+            ],
+            mockMessages: {
+                "group1": [
+                    { id: 1, text: "大家好，今天BTC有什么动向？", sender: "王分析师", incoming: true, time: "10:24" },
+                    { id: 2, text: "早盘震荡，现在开始走强", sender: "李投资", incoming: true, time: "10:26" },
+                    { id: 3, text: "我看技术面有突破迹象", sender: "赵老师", incoming: true, time: "10:30" },
+                    { id: 4, text: "同意，MACD指标开始金叉", sender: "我", incoming: false, time: "10:32" },
+                    { id: 5, text: "支撑位在28500左右", sender: "王分析师", incoming: true, time: "10:35" }
+                ],
+                "group2": [
+                    { id: 1, text: "以太坊合并后表现如何？", sender: "ETH粉丝", incoming: true, time: "09:15" },
+                    { id: 2, text: "总体稳定，但还需要时间检验", sender: "我", incoming: false, time: "09:20" },
+                    { id: 3, text: "质押收益率有所下降", sender: "节点运营者", incoming: true, time: "09:24" },
+                    { id: 4, text: "长期看好ETH2.0的发展方向", sender: "DeFi开发", incoming: true, time: "09:30" }
+                ],
+                "group3": [
+                    { id: 1, text: "监管新政策出台，对交易所影响较大", sender: "新闻播报", incoming: true, time: "11:00" },
+                    { id: 2, text: "有具体内容吗？", sender: "我", incoming: false, time: "11:02" },
+                    { id: 3, text: "主要是KYC要求更严格", sender: "新闻播报", incoming: true, time: "11:05" },
+                    { id: 4, text: "这会影响小型交易所生存", sender: "分析师", incoming: true, time: "11:10" }
+                ]
+            }
+        };
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', initApp);
+        
+        function initApp() {
+            // 初始化Telegram WebApp
+            initTelegramWebApp();
+            
+            // 添加事件监听器
+            setupEventListeners();
+            
+            // 默认显示登录页面
+            showPage('login-page');
+        }
+        
+        // 初始化Telegram WebApp
+        function initTelegramWebApp() {
+            try {
+                // 检查 Telegram WebApp API 是否可用
+                if (!window.Telegram || !window.Telegram.WebApp) {
+                    console.warn("Telegram WebApp API 不可用，使用模拟数据");
+                    // 使用模拟用户数据
+                    app.user = {
+                        id: 123456789,
+                        username: "demo_user",
+                        first_name: "测试",
+                        last_name: "用户"
+                    };
+                    updateUserInfo();
+                    return;
+                }
+                
+                // 初始化 Telegram WebApp
+                const webapp = window.Telegram.WebApp;
+                
+                // 准备 WebApp
+                webapp.ready();
+                
+                // 设置主题
+                document.body.className = webapp.colorScheme;
+                
+                // 配置 WebApp
+                webapp.expand();
+                
+                // 获取用户数据
+                if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
+                    app.user = webapp.initDataUnsafe.user;
+                    updateUserInfo();
+                    app.tgInitialized = true;
+                } else {
+                    console.warn("无法获取 Telegram 用户信息，使用模拟数据");
+                    app.user = {
+                        id: 123456789,
+                        username: "demo_user",
+                        first_name: "测试",
+                        last_name: "用户"
+                    };
+                    updateUserInfo();
+                }
+                
+                // 设置返回按钮
+                webapp.BackButton.onClick(() => {
+                    if (app.currentPage === 'chat-page') {
+                        showPage('groups-page');
+                        webapp.BackButton.hide();
+                    } else if (app.currentPage !== 'login-page') {
+                        webapp.close();
+                    }
+                });
+                
+            } catch (error) {
+                console.error("初始化 Telegram WebApp 失败:", error);
+                // 使用模拟用户数据
+                app.user = {
+                    id: 123456789,
+                    username: "demo_user",
+                    first_name: "测试",
+                    last_name: "用户"
+                };
+                updateUserInfo();
+            }
+        }
+        
+        // 添加事件监听器
+        function setupEventListeners() {
+            // 导航按钮点击事件
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const pageName = this.getAttribute('data-page');
+                    if (pageName) {
+                        showPage(pageName);
+                        
+                        // 更新导航栏活跃状态
+                        document.querySelectorAll('.nav-item').forEach(navItem => {
+                            navItem.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // 继续按钮点击事件
+            document.getElementById('continue-button').addEventListener('click', function() {
+                showPage('groups-page');
+                document.querySelector('[data-page="groups-page"]').classList.add('active');
+                loadGroups();
+            });
+            
+            // 消息表单提交事件
+            document.getElementById('message-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const input = document.getElementById('message-input');
+                const text = input.value.trim();
+                
+                if (text && app.currentChat) {
+                    // 添加新消息
+                    const message = {
+                        id: Date.now(),
+                        text: text,
+                        sender: "我",
+                        incoming: false,
+                        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                    };
+                    
+                    app.mockMessages[app.currentChat].push(message);
+                    renderMessages(app.currentChat);
+                    
+                    // 清空输入框
+                    input.value = '';
+                }
+            });
+            
+            // 深色模式切换
+            document.getElementById('darkModeSwitch').addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.classList.add('dark');
+                } else {
+                    document.body.classList.remove('dark');
+                }
+            });
+        }
+        
+        // 更新用户信息
+        function updateUserInfo() {
+            const userInfoElement = document.getElementById('user-info');
+            if (app.user) {
+                userInfoElement.innerHTML = `
+                    <img src="https://ui-avatars.com/api/?name=${app.user.first_name}&background=random" alt="用户头像">
+                    <span>${app.user.first_name} ${app.user.last_name || ''}</span>
+                `;
+                
+                const userDetailsElement = document.getElementById('user-details');
+                userDetailsElement.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>已登录为 ${app.user.first_name} ${app.user.last_name || ''}</strong>
+                        ${app.user.username ? `<p>用户名: @${app.user.username}</p>` : ''}
+                        <p>用户ID: ${app.user.id}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 显示特定页面
+        function showPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            const targetPage = document.getElementById(pageName);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                app.currentPage = pageName;
+            }
+            
+            // 如果是聊天页面，隐藏底部导航
+            if (pageName === 'chat-page') {
+                document.querySelector('.bottom-nav').style.display = 'none';
+                
+                // 显示返回按钮
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.BackButton.show();
+                }
+            } else {
+                document.querySelector('.bottom-nav').style.display = 'flex';
+                
+                // 隐藏返回按钮
+                if (window.Telegram && window.Telegram.WebApp && pageName !== 'login-page') {
+                    window.Telegram.WebApp.BackButton.hide();
+                }
+            }
+        }
+        
+        // 加载群组
+        function loadGroups() {
+            const groupsContainer = document.getElementById('chat-groups');
+            
+            if (app.mockGroups && app.mockGroups.length > 0) {
+                groupsContainer.innerHTML = app.mockGroups.map(group => `
+                    <div class="chat-group-card" data-group-id="${group.id}">
+                        <div class="group-info">
+                            <h3>${group.name}</h3>
+                            <p>${group.description}</p>
+                        </div>
+                        <div class="group-meta">
+                            <span class="badge ${group.type === 'public' ? 'bg-success' : 'bg-secondary'}">
+                                ${group.type === 'public' ? '公开' : '私密'}
+                            </span>
+                            <div>
+                                ${group.telegramBound ? '<i class="bi bi-telegram text-primary me-2"></i>' : ''}
+                                <small class="text-muted">${group.messageCount} 条消息 · ${group.lastActivity}</small>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // 添加群组点击事件
+                document.querySelectorAll('.chat-group-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const groupId = this.getAttribute('data-group-id');
+                        openChat(groupId);
+                    });
+                });
+            } else {
+                groupsContainer.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        暂无群组数据
+                    </div>
+                `;
+            }
+        }
+        
+        // 打开聊天
+        function openChat(groupId) {
+            const group = app.mockGroups.find(g => g.id === groupId);
+            if (group) {
+                // 设置标题
+                document.getElementById('chat-title').textContent = group.name;
+                
+                // 保存当前聊天ID
+                app.currentChat = groupId;
+                
+                // 渲染消息
+                renderMessages(groupId);
+                
+                // 显示聊天页面
+                showPage('chat-page');
+            }
+        }
+        
+        // 渲染消息
+        function renderMessages(groupId) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messages = app.mockMessages[groupId] || [];
+            
+            if (messages.length > 0) {
+                messagesContainer.innerHTML = messages.map(message => `
+                    <div class="message ${message.incoming ? 'incoming' : 'outgoing'}">
+                        ${message.incoming ? `<div class="sender">${message.sender}</div>` : ''}
+                        <div class="content">${message.text}</div>
+                        <div class="time">${message.time}</div>
+                    </div>
+                `).join('');
+                
+                // 滚动到底部
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } else {
+                messagesContainer.innerHTML = `
+                    <div class="text-center py-5">
+                        <p class="text-muted">暂无消息</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 
